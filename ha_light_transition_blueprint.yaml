@@ -4,7 +4,7 @@ blueprint:
     Turns on a light to a specified RGB/Temp color and brightness, then transitions to a new brightness and color over a set amount of time.
   author: Mirai-Miki
   homeassistant:
-    min_version: "2024.6.0"
+    min_version: "2025.1.0"
 
   domain: script
   input:
@@ -42,6 +42,7 @@ blueprint:
       selector:
         color_temp:
           unit: "kelvin"
+          min: 1800
     target_temp:
       name: Target Temperature
       description: Target color temperature in Kelvin.
@@ -128,7 +129,7 @@ sequence:
               entity_id: !input light_entity
             data:
               brightness: "{{ i_brightness }}"
-              kelvin: !input initial_temp
+              color_temp_kelvin: !input initial_temp
 
   # Wait for light to turn on
   - wait_for_trigger:
@@ -171,6 +172,6 @@ sequence:
                     entity_id: !input light_entity
                   data:
                     brightness: "{{ (int(i_brightness) + (repeat.index * brightness_step)) | int }}"
-                    kelvin: "{{ (int(initial_temp) + (repeat.index * temp_step)) | int }}"
+                    color_temp_kelvin: "{{ (int(initial_temp) + (repeat.index * temp_step)) | int }}"
         - delay:
             seconds: !input step_time
